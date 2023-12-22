@@ -173,9 +173,11 @@ public class Window {
         graphic.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // TODO: test laser
-        graphic.rotate(-45);
-        graphic.clearRect(-400, 300, stage.getWidth() + 50, 50);
-        graphic.rotate(45);
+//        graphic.translate(100, 100);
+//        graphic.rotate(135);
+//        graphic.clearRect(-25,-25,200,50);
+//        graphic.rotate(-135);
+//        graphic.translate(-100, -100);
 
         // titlebar
         graphic.setFill(Color.web("#333333"));
@@ -196,6 +198,7 @@ public class Window {
         graphic.strokeLine(canvas.getWidth() - 20, 10, canvas.getWidth() - 30, 20);
 
         // maximize button
+        graphic.setStroke(TITLE_BAR_FOREGROUND_COLOR_INACTIVE_DEFAULT);
         graphic.setFill(maximizeButtonColor);
         graphic.fillRect(canvas.getWidth() - 100, 0,50, 30);
         graphic.strokeLine(canvas.getWidth() - 80, 10, canvas.getWidth() - 70, 10);
@@ -204,6 +207,7 @@ public class Window {
         graphic.strokeLine(canvas.getWidth() - 70, 10, canvas.getWidth() - 70, 20);
 
         // minimize button
+        graphic.setStroke(titleBarForegroundColor);
         graphic.setFill(minimizeButtonColor);
         graphic.fillRect(canvas.getWidth() - 150, 0,50, 30);
         graphic.strokeLine(canvas.getWidth() - 120, 20, canvas.getWidth() - 130, 20);
