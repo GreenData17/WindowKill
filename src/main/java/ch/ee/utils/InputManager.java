@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 public class InputManager {
     public static final List<KeyCode> pressedKeys = new ArrayList<>();
-    public static final ScheduledExecutorService ec = Executors.newSingleThreadScheduledExecutor();
 
     public static boolean isPressed(KeyCode key){
         return pressedKeys.contains(key);
@@ -25,8 +24,6 @@ public class InputManager {
     public static void unregisterKey(KeyCode key) {
         if(!pressedKeys.contains(key)) return;
 
-        ec.schedule(() -> {
-            pressedKeys.remove(key);
-        }, 100, TimeUnit.MILLISECONDS);
+        pressedKeys.remove(key);
     }
 }

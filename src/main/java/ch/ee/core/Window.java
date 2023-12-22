@@ -1,6 +1,8 @@
 package ch.ee.core;
 
 import ch.ee.common.Vector2;
+import ch.ee.utils.InputManager;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -14,7 +16,7 @@ import javafx.stage.StageStyle;
 
 import java.util.Objects;
 
-public class Window {
+public abstract class Window {
     // objects
     private final Stage stage;
     private final Scene scene;
@@ -32,13 +34,16 @@ public class Window {
     private Color titleBarForegroundColor;
 
     // window infos
-    private String title;
+    private final String title;
     private boolean mouseInWindow;
 
     // window event states
     private boolean mouseClickedOnTitleBar;
     private boolean closeButtonHovering;
     private Vector2 oldMousePosition;
+
+    // window state
+    private long lastTime;
 
     public Window(String title) {
         this.title = title;
@@ -64,8 +69,21 @@ public class Window {
         canvas.setClip(clipRect);
 
         graphic = canvas.getGraphicsContext2D();
+        start();
         setSize(500, 500);
-        drawWindowBase();
+
+        lastTime = System.nanoTime();
+
+        new AnimationTimer() {
+            @Override
+            public void handle(long currentTime) {
+                double deltaTime = (currentTime - lastTime) / 1e9d;
+                lastTime = currentTime;
+
+                update(deltaTime);
+                drawWindow();
+            }
+        }.start();
 
         Pane root = (Pane) scene.getRoot();
         root.getChildren().add(canvas);
@@ -75,6 +93,7 @@ public class Window {
 
     public void show(){
         stage.show();
+        start();
     }
 
     public void setSize(int w, int h){
@@ -87,7 +106,7 @@ public class Window {
         clipRect.setWidth(w);
         clipRect.setHeight(h);
 
-        drawWindowBase();
+        drawWindow();
     }
 
     // internal
@@ -99,7 +118,7 @@ public class Window {
             else
                 titleBarForegroundColor = TITLE_BAR_FOREGROUND_COLOR_INACTIVE_DEFAULT;
 
-            drawWindowBase();
+            drawWindow();
         });
 
         scene.setOnMouseExited(e -> {
@@ -108,7 +127,7 @@ public class Window {
             closeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             maximizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             closeButtonHovering = false;
-            drawWindowBase();
+            drawWindow();
         });
 
         scene.setOnMouseEntered(e -> {
@@ -154,7 +173,7 @@ public class Window {
                 minimizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             }
 
-            drawWindowBase();
+            drawWindow();
         });
 
         scene.setOnMouseDragged(e -> {
@@ -163,9 +182,14 @@ public class Window {
                 stage.setY(e.getScreenY() - oldMousePosition.y);
             }
         });
+
+        // register key presses
+
+        scene.setOnKeyPressed(e -> InputManager.registerKey(e.getCode()));
+        scene.setOnKeyReleased(e -> InputManager.unregisterKey(e.getCode()));
     }
 
-    private void drawWindowBase(){
+    private void drawWindow(){
         graphic.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // background
@@ -178,6 +202,10 @@ public class Window {
 //        graphic.clearRect(-25,-25,200,50);
 //        graphic.rotate(-135);
 //        graphic.translate(-100, -100);
+
+        graphic.setFill(Color.WHITE);
+        graphic.setStroke(Color.WHITE);
+        draw(graphic);
 
         // titlebar
         graphic.setFill(Color.web("#333333"));
@@ -212,11 +240,14 @@ public class Window {
         graphic.fillRect(canvas.getWidth() - 150, 0,50, 30);
         graphic.strokeLine(canvas.getWidth() - 120, 20, canvas.getWidth() - 130, 20);
 
-        // window border
+        // window border (shall always be last!!!)
         graphic.setStroke(Color.web("#333333"));
         graphic.strokeRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 20, 20);
-
-
-
     }
+
+    public abstract void start();
+
+    public abstract void draw(GraphicsContext graphic);
+
+    public abstract void update(double deltaTime);
 }
