@@ -2,7 +2,6 @@ package ch.ee.core;
 
 import ch.ee.common.Vector2;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,10 +23,12 @@ public class Window {
     private final GraphicsContext graphic;
 
     // window colors
-    private final Color CLOSE_BUTTON_COLOR_DEFAULT = Color.web("#333333");
+    private final Color TITLE_BAR_BUTTON_COLOR_DEFAULT = Color.web("#333333");
     private final Color TITLE_BAR_FOREGROUND_COLOR_ACTIVE_DEFAULT = Color.WHITE;
     private final Color TITLE_BAR_FOREGROUND_COLOR_INACTIVE_DEFAULT = Color.GREY;
     private Color closeButtonColor;
+    private Color maximizeButtonColor;
+    private Color minimizeButtonColor;
     private Color titleBarForegroundColor;
 
     // window infos
@@ -41,7 +42,9 @@ public class Window {
 
     public Window(String title) {
         this.title = title;
-        closeButtonColor = CLOSE_BUTTON_COLOR_DEFAULT;
+        closeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
+        maximizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
+        minimizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
 
         stage = new Stage();
         stage.setResizable(false);
@@ -102,7 +105,8 @@ public class Window {
         scene.setOnMouseExited(e -> {
             mouseInWindow = false;
             System.out.println("Exited");
-            closeButtonColor = CLOSE_BUTTON_COLOR_DEFAULT;
+            closeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
+            maximizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             closeButtonHovering = false;
             drawWindowBase();
         });
@@ -114,7 +118,7 @@ public class Window {
 
         scene.setOnMousePressed(e -> {
             if(e.getButton() == MouseButton.PRIMARY){
-                if(e.getSceneY() <= 30 && e.getSceneX() <= canvas.getWidth() - 50){
+                if(e.getSceneY() <= 30 && e.getSceneX() <= canvas.getWidth() - 150){
                     mouseClickedOnTitleBar = true;
                     oldMousePosition = new Vector2(e.getSceneX(), e.getSceneY());
                 }
@@ -134,8 +138,20 @@ public class Window {
                 closeButtonColor = Color.web("#993333");
                 closeButtonHovering = true;
             }else{
-                closeButtonColor = CLOSE_BUTTON_COLOR_DEFAULT;
+                closeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
                 closeButtonHovering = false;
+            }
+
+            if(e.getSceneY() <= 30 && e.getSceneX() >= canvas.getWidth() - 100 && e.getSceneX() <= canvas.getWidth() - 50 && mouseInWindow){
+                maximizeButtonColor = Color.web("#444444");
+            }else{
+                maximizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
+            }
+
+            if(e.getSceneY() <= 30 && e.getSceneX() >= canvas.getWidth() - 150 && e.getSceneX() <= canvas.getWidth() - 100 && mouseInWindow){
+                minimizeButtonColor = Color.web("#444444");
+            }else{
+                minimizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             }
 
             drawWindowBase();
@@ -165,14 +181,32 @@ public class Window {
         graphic.setFill(Color.web("#333333"));
         graphic.fillRect(0, 0, canvas.getWidth(), 30);
 
-        // title bar
+        graphic.setStroke(Color.WHITE);
+        graphic.strokeOval(10, 5, 20, 20);
+        graphic.strokeOval(13, 8, 14, 14);
+
+        // title text
         graphic.setStroke(titleBarForegroundColor);
-        graphic.strokeText(title, 20, 20);
+        graphic.strokeText(title, 35, 20);
 
         // close button
         graphic.setFill(closeButtonColor);
         graphic.fillRect(canvas.getWidth() - 50, 0,50, 30);
-        graphic.strokeText("X", canvas.getWidth() - 30, 20);
+        graphic.strokeLine(canvas.getWidth() - 30, 10, canvas.getWidth() - 20, 20);
+        graphic.strokeLine(canvas.getWidth() - 20, 10, canvas.getWidth() - 30, 20);
+
+        // maximize button
+        graphic.setFill(maximizeButtonColor);
+        graphic.fillRect(canvas.getWidth() - 100, 0,50, 30);
+        graphic.strokeLine(canvas.getWidth() - 80, 10, canvas.getWidth() - 70, 10);
+        graphic.strokeLine(canvas.getWidth() - 80, 10, canvas.getWidth() - 80, 20);
+        graphic.strokeLine(canvas.getWidth() - 70, 20, canvas.getWidth() - 80, 20);
+        graphic.strokeLine(canvas.getWidth() - 70, 10, canvas.getWidth() - 70, 20);
+
+        // minimize button
+        graphic.setFill(minimizeButtonColor);
+        graphic.fillRect(canvas.getWidth() - 150, 0,50, 30);
+        graphic.strokeLine(canvas.getWidth() - 120, 20, canvas.getWidth() - 130, 20);
 
         // window border
         graphic.setStroke(Color.web("#333333"));
