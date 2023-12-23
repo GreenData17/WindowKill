@@ -1,5 +1,7 @@
 package ch.ee.common;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public abstract class GameObject {
     protected Vector2 position;
 
@@ -8,16 +10,16 @@ public abstract class GameObject {
         start();
     }
 
-    public void triggerUpdate(){
-        update();
+    public void triggerUpdate(double deltaTime){
+        update(deltaTime);
     }
 
-    public void triggerDraw(){
-        draw();
+    public void triggerDraw(GraphicsContext graphic){
+        draw(graphic);
     }
 
     protected abstract void start();
-    protected abstract void update();
-    protected abstract void draw();
+    protected abstract void update(double deltaTime);
+    protected abstract void draw(GraphicsContext graphic);
 
 }

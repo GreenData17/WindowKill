@@ -1,5 +1,6 @@
 package ch.ee.core;
 
+import ch.ee.common.GameObject;
 import ch.ee.common.Vector2;
 import ch.ee.utils.InputManager;
 import javafx.animation.AnimationTimer;
@@ -14,6 +15,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class Window {
@@ -23,6 +26,7 @@ public abstract class Window {
     private final Canvas canvas;
     private final Rectangle clipRect;
     private final GraphicsContext graphic;
+    private final List<GameObject> gameObjects = new ArrayList<>();
 
     // window colors
     private final Color TITLE_BAR_BUTTON_COLOR_DEFAULT = Color.web("#333333");
@@ -81,6 +85,10 @@ public abstract class Window {
                 lastTime = currentTime;
 
                 update(deltaTime);
+                for (GameObject gameObject : gameObjects){
+                    gameObject.triggerUpdate(deltaTime);
+                }
+
                 drawWindow();
             }
         }.start();
@@ -210,6 +218,10 @@ public abstract class Window {
 
         graphic.setFill(Color.WHITE);
         graphic.setStroke(Color.WHITE);
+        for (GameObject gameObject : gameObjects){
+            gameObject.triggerDraw(graphic);
+        }
+
         draw(graphic);
 
         // titlebar
@@ -248,6 +260,11 @@ public abstract class Window {
         // window border (shall always be last!!!)
         graphic.setStroke(Color.web("#333333"));
         graphic.strokeRoundRect(0, 0, canvas.getWidth(), canvas.getHeight(), 20, 20);
+    }
+
+    public void instantiate(GameObject gameObject){
+        gameObjects.add(gameObject);
+        gameObject.triggerStart();
     }
 
     public abstract void start();
