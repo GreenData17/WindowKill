@@ -10,7 +10,7 @@ public class GameWindow extends Window {
     private final int SPEED = 200;
     private double currentSpeedx;
     private double currentSpeedy;
-    private Vector2 playerDirection;
+    private final Vector2 playerDirection;
 
     private Vector2 playerPosition;
 
@@ -32,6 +32,9 @@ public class GameWindow extends Window {
         graphic.strokeOval(playerPosition.x, playerPosition.y, 30, 30);
 
         graphic.setLineWidth(1);
+
+        graphic.fillRect(InputManager.getMouseWindowPosition().x - 5, InputManager.getMouseWindowPosition().y - 5,
+                        10, 10);
     }
 
     @Override
