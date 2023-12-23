@@ -146,10 +146,14 @@ public abstract class Window {
                     Platform.exit();
                 }
             }
+
+            InputManager.setMouseButton(e.getButton());
         });
 
         scene.setOnMouseReleased(e -> {
             mouseClickedOnTitleBar = false;
+
+            InputManager.setMouseButton(MouseButton.NONE);
         });
 
         scene.setOnMouseMoved(e -> {
@@ -173,7 +177,8 @@ public abstract class Window {
                 minimizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
             }
 
-            drawWindow();
+            InputManager.setMouseWindowPosition(new Vector2(e.getSceneX(), e.getSceneY()));
+            InputManager.setMouseScreenPosition(new Vector2(e.getScreenX(), e.getScreenY()));
         });
 
         scene.setOnMouseDragged(e -> {
