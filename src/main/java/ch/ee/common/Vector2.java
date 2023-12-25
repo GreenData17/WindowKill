@@ -21,6 +21,12 @@ public class Vector2 {
         return new Vector2(a.x + b.x, a.y + b.y);
     }
 
+    public static double getAngleTowards(Vector2 from, Vector2 to){
+        double angle = Math.atan2(to.y - from.y, to.x - from.x);
+        angle = Math.toDegrees(angle);
+        angle = (angle + 360) % 360;
+        return angle;
+    }
 
     @Override
     public String toString() {

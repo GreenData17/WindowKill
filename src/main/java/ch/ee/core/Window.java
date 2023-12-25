@@ -216,9 +216,10 @@ public abstract class Window {
 //        graphic.rotate(-135);
 //        graphic.translate(-100, -100);
 
-        graphic.setFill(Color.WHITE);
-        graphic.setStroke(Color.WHITE);
+
         for (GameObject gameObject : gameObjects){
+            graphic.setFill(Color.WHITE);
+            graphic.setStroke(Color.WHITE);
             gameObject.triggerDraw(graphic);
         }
 
