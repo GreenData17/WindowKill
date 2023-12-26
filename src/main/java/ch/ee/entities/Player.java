@@ -87,18 +87,16 @@ public class Player extends GameObject {
     protected void draw(GraphicsContext graphic) {
         graphic.setLineWidth(5);
 
-        graphic.strokeOval(position.x + 15, position.y + 15, 30, 30);
-        graphic.fillRect(position.x + 27.5, position.y + 27.5, 5, 5);
+        graphic.strokeOval(position.x - 15, position.y - 15, 30, 30);
+        graphic.fillRect(position.x - 2.5, position.y - 2.5, 5, 5);
 
         graphic.setLineWidth(1);
 
         // debug direction
 
-        graphic.setStroke(Color.YELLOW);
+        graphic.translate(position.x, position.y);
 
-        graphic.translate(position.x + 30, position.y + 30);
-
-        lastAngle = Vector2.getAngleTowards(new Vector2(position.x + 30, position.y + 30), InputManager.getMouseWindowPosition());
+        lastAngle = Vector2.getAngleTowards(new Vector2(position.x - 15, position.y - 15), InputManager.getMouseWindowPosition());
 
         graphic.rotate(lastAngle);
 
@@ -106,6 +104,6 @@ public class Player extends GameObject {
         graphic.strokeLine(0, 0, 50, 0);
 
         graphic.rotate(-lastAngle);
-        graphic.translate(-(position.x + 30), -position.y - 30);
+        graphic.translate(-position.x, -position.y);
     }
 }

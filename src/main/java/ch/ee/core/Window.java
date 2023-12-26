@@ -305,4 +305,8 @@ public abstract class Window {
     public void setDragable(boolean dragable) {
         this.dragable = dragable;
     }
+
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
+    }
 }
