@@ -1,9 +1,23 @@
 package ch.ee.common;
 
+import ch.ee.core.Window;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class GameObject {
-    protected Vector2 position;
+    public Window window;
+    public Vector2 position;
+
+    protected void instantiate(GameObject gameObject){
+        window.instantiate(gameObject);
+    }
+
+    protected void destroy(GameObject gameObject){
+        window.destroy(gameObject);
+    }
+
+    protected void destroy(){
+        window.destroy(this);
+    }
 
     public void triggerStart(){
         position = Vector2.zero();
