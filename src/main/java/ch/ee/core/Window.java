@@ -27,6 +27,8 @@ public abstract class Window {
     private final Rectangle clipRect;
     private final GraphicsContext graphic;
     private final List<GameObject> gameObjects = new ArrayList<>();
+    private final List<GameObject> gameObjectsToDelete = new ArrayList<>();
+    private final List<GameObject> gameObjectsToCreate = new ArrayList<>();
 
     // window colors
     private final Color TITLE_BAR_BUTTON_COLOR_DEFAULT = Color.web("#333333");
@@ -86,11 +88,26 @@ public abstract class Window {
                 lastTime = currentTime;
 
                 update(deltaTime);
-                try {
                     for (GameObject gameObject : gameObjects) {
                         gameObject.triggerUpdate(deltaTime);
                     }
-                }catch (Exception ignored){ }
+
+                    if(!gameObjectsToDelete.isEmpty()) {
+                        for (GameObject gameObject : gameObjectsToDelete) {
+                            gameObjects.remove(gameObject);
+                        }
+                    }
+
+                    gameObjectsToDelete.clear();
+
+                    if(!gameObjectsToCreate.isEmpty()){
+                        for (GameObject gameObject : gameObjectsToCreate){
+                            gameObjects.add(gameObject);
+                            gameObject.triggerStart();
+                        }
+                    }
+
+                    gameObjectsToCreate.clear();
 
                 drawWindow();
             }
@@ -283,12 +300,11 @@ public abstract class Window {
 
     public void instantiate(GameObject gameObject){
         gameObject.window = this;
-        gameObjects.add(gameObject);
-        gameObject.triggerStart();
+        gameObjectsToCreate.add(gameObject);
     }
 
     public void destroy(GameObject gameObject){
-        gameObjects.remove(gameObject);
+        gameObjectsToDelete.add(gameObject);
     }
 
     public abstract void start();

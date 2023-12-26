@@ -28,6 +28,7 @@ public class Bullet extends GameObject {
     @Override
     protected void start() {
         running = true;
+        position = Vector2.zero();
     }
 
     @Override

@@ -8,6 +8,9 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TriangleEnemy extends GameObject {
     private final double SPEED = 100;
 
@@ -23,14 +26,18 @@ public class TriangleEnemy extends GameObject {
 
     @Override
     protected void start() {
-
+        collisionBox = new BoundingBox(position.x - 15, position.y - 20, 30, 40);
     }
 
     @Override
     protected void update(double deltaTime) {
+        if(collisionBox == null) return;
+
         position = Vector2.moveTowardsAngle(position, Vector2.getAngleTowards(position, player.position), SPEED * deltaTime);
 
-        for (GameObject gameobject : window.getGameObjects()){
+        List<GameObject> gameObjects = List.copyOf(window.getGameObjects());
+
+        for (GameObject gameobject : gameObjects){
             if(gameobject.getClass() != Bullet.class) continue;
 
             if(collisionBox.intersects(((Bullet) gameobject).getCollisionBox())){
@@ -45,8 +52,8 @@ public class TriangleEnemy extends GameObject {
 
     @Override
     protected void draw(GraphicsContext graphic) {
-        graphic.setFill(Color.CYAN);
-        graphic.fillRect(position.x - 15, position.y - 20, 30, 40);
+//        graphic.setFill(Color.CYAN);
+//        graphic.fillRect(position.x - 15, position.y - 20, 30, 40);
 
         graphic.translate(position.x, position.y);
         graphic.setStroke(Color.YELLOW);
