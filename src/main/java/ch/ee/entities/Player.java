@@ -5,41 +5,51 @@ import ch.ee.common.Vector2;
 import ch.ee.utils.InputManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 
 public class Player extends GameObject {
 
-    private final int SPEED = 200;
+    private final int SPEED = 10200;
     private double currentSpeedX;
     private double currentSpeedY;
     private Vector2 direction;
+    private double lastAngle;
+
+    // states
+    private boolean shooting;
+    private double shootingDelay;
+
+    // stats
+    private double shootSpeed = .3;
 
     @Override
     protected void start() {
-        position = new Vector2(100, 100);
+        position = new Vector2(50, 50);
         direction = Vector2.zero();
+        lastAngle = 0;
+        shootingDelay = 0;
     }
 
     @Override
     protected void update(double deltaTime) {
         if(InputManager.isPressed(KeyCode.W)) {
-            currentSpeedY = SPEED;
+            currentSpeedY = SPEED * deltaTime;
             direction.y = -1;
         }
 
         if(InputManager.isPressed(KeyCode.S)) {
-            currentSpeedY = SPEED;
+            currentSpeedY = SPEED * deltaTime;
             direction.y = 1;
         }
 
         if(InputManager.isPressed(KeyCode.A)) {
-            currentSpeedX = SPEED;
+            currentSpeedX = SPEED * deltaTime;
             direction.x = -1;
         }
 
         if(InputManager.isPressed(KeyCode.D)) {
-            currentSpeedX = SPEED;
+            currentSpeedX = SPEED * deltaTime;
             direction.x = 1;
         }
 
@@ -48,6 +58,18 @@ public class Player extends GameObject {
 
         if(!InputManager.isPressed(KeyCode.A) && !InputManager.isPressed(KeyCode.D))
             direction.x = 0;
+
+        // shooting
+        if(shootingDelay > 0) shootingDelay -= deltaTime;
+
+        if(InputManager.getMouseButton() == MouseButton.PRIMARY && !shooting && shootingDelay <= 0){
+            shooting = true;
+            shootingDelay = shootSpeed;
+            instantiate(new Bullet(position, lastAngle, this));
+        }
+        else if(InputManager.getMouseButton() == MouseButton.NONE){
+            shooting = false;
+        }
 
         // TODO: for debuff? [ slippery ]
 //        if(currentSpeedY > 0)
@@ -76,14 +98,14 @@ public class Player extends GameObject {
 
         graphic.translate(position.x + 30, position.y + 30);
 
-        double angle = Vector2.getAngleTowards(new Vector2(position.x + 30, position.y + 30), InputManager.getMouseWindowPosition());
+        lastAngle = Vector2.getAngleTowards(new Vector2(position.x + 30, position.y + 30), InputManager.getMouseWindowPosition());
 
-        graphic.rotate(angle);
+        graphic.rotate(lastAngle);
 
         graphic.setStroke(Color.CYAN);
         graphic.strokeLine(0, 0, 50, 0);
 
-        graphic.rotate(-angle);
+        graphic.rotate(-lastAngle);
         graphic.translate(-(position.x + 30), -position.y - 30);
     }
 }

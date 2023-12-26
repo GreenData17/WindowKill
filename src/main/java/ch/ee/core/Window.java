@@ -73,7 +73,6 @@ public abstract class Window {
         canvas.setClip(clipRect);
 
         graphic = canvas.getGraphicsContext2D();
-        start();
         setSize(500, 500);
 
         lastTime = System.nanoTime();
@@ -85,9 +84,11 @@ public abstract class Window {
                 lastTime = currentTime;
 
                 update(deltaTime);
-                for (GameObject gameObject : gameObjects){
-                    gameObject.triggerUpdate(deltaTime);
-                }
+                try {
+                    for (GameObject gameObject : gameObjects) {
+                        gameObject.triggerUpdate(deltaTime);
+                    }
+                }catch (Exception ignored){ }
 
                 drawWindow();
             }
@@ -104,7 +105,17 @@ public abstract class Window {
         start();
     }
 
-    public void setSize(int w, int h){
+    public void setPosition(double x, double y){
+        stage.setX(x);
+        stage.setY(y);
+
+    }
+
+    public Vector2 getPosition(){
+        return new Vector2(stage.getX(), stage.getY());
+    }
+
+    public void setSize(double w, double h){
         stage.setWidth(w);
         stage.setHeight(h);
 
@@ -115,6 +126,10 @@ public abstract class Window {
         clipRect.setHeight(h);
 
         drawWindow();
+    }
+
+    public Vector2 getSize(){
+        return new Vector2(canvas.getWidth(), canvas.getHeight());
     }
 
     // internal
@@ -155,7 +170,8 @@ public abstract class Window {
                 }
             }
 
-            InputManager.setMouseButton(e.getButton());
+            if(InputManager.getMouseButton() != e.getButton())
+                InputManager.setMouseButton(e.getButton());
         });
 
         scene.setOnMouseReleased(e -> {
@@ -264,8 +280,13 @@ public abstract class Window {
     }
 
     public void instantiate(GameObject gameObject){
+        gameObject.window = this;
         gameObjects.add(gameObject);
         gameObject.triggerStart();
+    }
+
+    public void destroy(GameObject gameObject){
+        gameObjects.remove(gameObject);
     }
 
     public abstract void start();
