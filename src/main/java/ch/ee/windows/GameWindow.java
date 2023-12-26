@@ -3,6 +3,7 @@ package ch.ee.windows;
 import ch.ee.common.Vector2;
 import ch.ee.core.Window;
 import ch.ee.entities.Player;
+import ch.ee.entities.TriangleEnemy;
 import ch.ee.utils.InputManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -24,12 +25,15 @@ public class GameWindow extends Window {
 
         player = new Player();
         instantiate(player);
+
+        TriangleEnemy enemy = new TriangleEnemy(player, this);
+        instantiate(enemy);
+        enemy.position = new Vector2(200);
     }
 
     @Override
     public void draw(GraphicsContext graphic) {
-        graphic.fillRect(InputManager.getMouseWindowPosition().x - 5, InputManager.getMouseWindowPosition().y - 5,
-                        10, 10);
+        // graphic.fillRect(InputManager.getMouseWindowPosition().x - 5, InputManager.getMouseWindowPosition().y - 5, 10, 10);
     }
 
     @Override
@@ -46,10 +50,10 @@ public class GameWindow extends Window {
             player.position = Vector2.add(player.position, new Vector2(0, -10 * deltaTime));
         }
 
-        if(player.position.x <= 0) player.position.x = 1;
-        if(player.position.x >= getSize().x - 60) player.position.x = getSize().x - 60;
+        if(player.position.x <= 15) player.position.x = 15;
+        if(player.position.x >= getSize().x - 30) player.position.x = getSize().x - 30;
 
-        if(player.position.y <= 30) player.position.y = 31;
-        if(player.position.y >= getSize().y - 60) player.position.y = getSize().y - 60;
+        if(player.position.y <= 45) player.position.y = 46;
+        if(player.position.y >= getSize().y - 30) player.position.y = getSize().y - 30;
     }
 }
