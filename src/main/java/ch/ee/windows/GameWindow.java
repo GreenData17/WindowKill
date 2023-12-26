@@ -20,6 +20,8 @@ public class GameWindow extends Window {
 
     @Override
     public void start(){
+        setDragable(false);
+
         player = new Player();
         instantiate(player);
     }
@@ -43,5 +45,11 @@ public class GameWindow extends Window {
             setPosition(getPosition().x, getPosition().y + 10 * deltaTime);
             player.position = Vector2.add(player.position, new Vector2(0, -10 * deltaTime));
         }
+
+        if(player.position.x <= 0) player.position.x = 1;
+        if(player.position.x >= getSize().x - 60) player.position.x = getSize().x - 60;
+
+        if(player.position.y <= 30) player.position.y = 31;
+        if(player.position.y >= getSize().y - 60) player.position.y = getSize().y - 60;
     }
 }
