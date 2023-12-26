@@ -48,9 +48,11 @@ public abstract class Window {
 
     // window state
     private long lastTime;
+    private boolean dragable;
 
     public Window(String title) {
         this.title = title;
+        dragable = true;
         closeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
         maximizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
         minimizeButtonColor = TITLE_BAR_BUTTON_COLOR_DEFAULT;
@@ -206,7 +208,7 @@ public abstract class Window {
         });
 
         scene.setOnMouseDragged(e -> {
-            if(mouseClickedOnTitleBar){
+            if(mouseClickedOnTitleBar && dragable){
                 stage.setX(e.getScreenX() - oldMousePosition.x);
                 stage.setY(e.getScreenY() - oldMousePosition.y);
             }
@@ -294,4 +296,13 @@ public abstract class Window {
     public abstract void draw(GraphicsContext graphic);
 
     public abstract void update(double deltaTime);
+
+
+    public boolean isDragable() {
+        return dragable;
+    }
+
+    public void setDragable(boolean dragable) {
+        this.dragable = dragable;
+    }
 }
