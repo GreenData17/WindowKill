@@ -4,9 +4,8 @@ import ch.ee.common.Vector2;
 import ch.ee.core.Window;
 import ch.ee.entities.Player;
 import ch.ee.entities.TriangleEnemy;
-import ch.ee.utils.InputManager;
+import ch.ee.ui.UiPoints;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 
 import java.util.Random;
 
@@ -18,6 +17,7 @@ public class GameWindow extends Window {
 
     // objects
     Player player;
+    UiPoints points;
 
     public GameWindow() {
         super("WindowKill :)");
@@ -29,6 +29,9 @@ public class GameWindow extends Window {
 
         player = new Player();
         instantiate(player);
+
+        points = new UiPoints();
+        instantiate(points);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class GameWindow extends Window {
             int direction = random.nextInt(1, 5);
             System.out.println(direction);
 
-            TriangleEnemy enemy = new TriangleEnemy(player, this);
+            TriangleEnemy enemy = new TriangleEnemy(player, this, points);
             instantiate(enemy);
 
             // top down | left right
