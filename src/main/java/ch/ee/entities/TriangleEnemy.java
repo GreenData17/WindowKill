@@ -70,4 +70,8 @@ public class TriangleEnemy extends GameObject {
         graphic.setLineWidth(1);
         graphic.translate(-position.x, -position.y);
     }
+
+    public BoundingBox getCollisionBox() {
+        return collisionBox;
+    }
 }

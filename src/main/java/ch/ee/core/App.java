@@ -10,6 +10,6 @@ public class App extends Application {
     {
         Window win = new GameWindow();
         win.show();
-        win.setSize(300, 330);
+        win.setSize(500, 500);
     }
 }

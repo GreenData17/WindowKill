@@ -14,6 +14,7 @@ public class GameWindow extends Window {
 
     private Vector2 smallestSize = new Vector2(260, 290);
     private double spawnDelay;
+    private double spawnSpeed = 1.5;
 
     // objects
     Player player;
@@ -37,7 +38,7 @@ public class GameWindow extends Window {
 
     @Override
     public void update(double deltaTime) {
-
+        if(player.isDead()) return;
 
         if(player.position != null) {
 
@@ -63,7 +64,8 @@ public class GameWindow extends Window {
         }
 
         if(spawnDelay <= 0){
-            spawnDelay = 1.5;
+            spawnDelay = spawnSpeed;
+            spawnSpeed -= 0.005;
             Random random = new Random();
             int direction = random.nextInt(1, 5);
             System.out.println(direction);
