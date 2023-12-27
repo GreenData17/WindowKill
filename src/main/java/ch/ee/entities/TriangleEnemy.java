@@ -4,6 +4,7 @@ import ch.ee.common.GameObject;
 import ch.ee.common.Vector2;
 import ch.ee.core.Window;
 import ch.ee.effects.FxBulletHit;
+import ch.ee.ui.UiPoints;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -16,12 +17,14 @@ public class TriangleEnemy extends GameObject {
 
     private Player player;
     private Window window;
+    private UiPoints points;
 
     private BoundingBox collisionBox;
 
-    public TriangleEnemy(Player player, Window window) {
+    public TriangleEnemy(Player player, Window window, UiPoints points) {
         this.player = player;
         this.window = window;
+        this.points = points;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class TriangleEnemy extends GameObject {
                 destroy(gameobject);
                 instantiate(new FxBulletHit(position, Color.YELLOW));
                 destroy();
+                points.addPoints(10);
             }
         }
 
