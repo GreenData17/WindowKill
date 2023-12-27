@@ -20,7 +20,6 @@ public abstract class GameObject {
     }
 
     public void triggerStart(){
-        position = Vector2.zero();
         start();
     }
 
