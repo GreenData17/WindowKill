@@ -3,12 +3,15 @@ package ch.ee.entities;
 import ch.ee.common.GameObject;
 import ch.ee.common.Vector2;
 import ch.ee.utils.InputManager;
+import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 
 public class Player extends GameObject {
+
+    private BoundingBox collisioinBox;
 
     private final int SPEED = 10200;
     private double currentSpeedX;
@@ -19,13 +22,15 @@ public class Player extends GameObject {
     // states
     private boolean shooting;
     private double shootingDelay;
+    private boolean dead;
 
     // stats
     private double shootSpeed = .3;
 
     @Override
     protected void start() {
-        position = new Vector2(50, 50);
+        position = new Vector2(150);
+        collisioinBox = new BoundingBox(position.x - 15, position.y - 15, 30, 30);
         direction = Vector2.zero();
         lastAngle = 0;
         shootingDelay = 0;
@@ -71,6 +76,16 @@ public class Player extends GameObject {
             shooting = false;
         }
 
+        if(!window.getGameObjects().isEmpty()){
+            for (GameObject gameObject : window.getGameObjects()){
+                if(gameObject.getClass() != TriangleEnemy.class) continue;
+
+                if(collisioinBox.intersects(((TriangleEnemy) gameObject).getCollisionBox())){
+                    dead = true;
+                }
+            }
+        }
+
         // TODO: for debuff? [ slippery ]
 //        if(currentSpeedY > 0)
 //            currentSpeedY -= 200 * deltaTime;
@@ -81,10 +96,13 @@ public class Player extends GameObject {
 //        else direction.x = 0;
 
         position = Vector2.add(position, new Vector2((currentSpeedX * direction.x) * deltaTime, (currentSpeedY * direction.y) * deltaTime));
+        collisioinBox = new BoundingBox(position.x - 15, position.y - 15, 30, 30);
     }
 
     @Override
     protected void draw(GraphicsContext graphic) {
+        if(dead) return;
+
         graphic.setLineWidth(5);
 
         graphic.strokeOval(position.x - 15, position.y - 15, 30, 30);
@@ -105,5 +123,9 @@ public class Player extends GameObject {
 
         graphic.rotate(-lastAngle);
         graphic.translate(-position.x, -position.y);
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }
